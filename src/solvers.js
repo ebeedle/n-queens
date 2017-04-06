@@ -38,79 +38,90 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = 0; //fixme
+  var solutionCount = 0;
+  var cleanBoard = new Board ({n:n});
 
-  //solutionMaker - take in 2 parameters - rows (starting from 0 - iterate to n), old board
-  var solutionMaker = function (row, oldBoard) {
-    //if row === n - increase solution count 
+  var solutionMaker = function(row) { 
     if (row === n){
       solutionCount++;
+      return;
     }
+    for (var i=0; i<n; i++){
+        cleanBoard.togglePiece(row,i);
 
-    //if row === 0
-    if (row === 0){
-      //FOR loop thru 0,1,2 colIndex
-      for (var i=0; i<n; i++){
-        //create new Board
-        var cleanBoard = new Board ({n:n});
-        //toggle piece i (0,1,2) - 3 boards will be created 
-        cleanBoard.togglePiece(0,i);
-        //recursively call each one - parameters (row+1, cleanBoard)
-        solutionMaker(row+1, cleanBoard);
-      }
-    }
-
-    //if row < n & row !== 0
-    if (row < n & row !== 0){
-      // var oldBoard2 = oldBoard;
-      // var newBoard = new Board(oldBoard.rows())
-      //FOR loop thru 0,1,2 colIndex
-      for (var i=0; i<n; i++){
-        //if current row and rows below are filled - if so reset
-        // var rowSum = oldBoard.get(row).reduce(function (a,b){return a+b},0);
-
-        // if (rowSum > 0){
-        //   for (var i=row; i<n-1; i++){
-        //     oldBoard.set(i,[0,0,0]);
-        //     oldBoard.set(i+1,[0,0,0]);
-        //   }
-        // }
-
-        if (row === 1) {
-          oldBoard.set(row,[0,0,0]);
-          oldBoard.set(row+1,[0,0,0]);          
+        if (!cleanBoard.hasAnyRooksConflicts()) {
+          solutionMaker(row+1);
         }
 
-        //grab oldBoard from prior iteration (row was 0) - set to currentBoard
-        var currentBoard = oldBoard;
-        console.log("Oldboard : ", oldBoard.get(0), oldBoard.get(1), oldBoard.get(2));
-        console.log('row,i', row, i);
-        // console.log('ROW 0', currentBoard.get(0));
-        // console.log('ROW 1', currentBoard.get(1));
-        //currentBoard.togglePiece (row,i)
-        currentBoard.togglePiece(row, i);
-        console.log('has problem?', currentBoard.hasAnyRooksConflicts())
-        // console.log('hits 2nd row, col:', row, i);
-        //if there are any conflict
-        if (currentBoard.hasAnyRooksConflicts()){
-          // console.log('position failed')
-          //togglePiece back
-          currentBoard.togglePiece(row,i);
-        } 
-
-        //else - recursively call   
-        else {
-          console.log('POSITION WORKS', row, i)
-          solutionMaker(row+1, currentBoard);
-        }
-      }
+        cleanBoard.togglePiece(row,i);
     }
   };
-
-  solutionMaker(0);
-
+  solutionMaker(0)
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
+
+  //   if (row === 0){
+  //     for (var i=0; i<n; i++){
+  //       var cleanBoard = new Board ({n:n});
+  //       cleanBoard.togglePiece(0,i);
+  //       solutionMaker(row+1, cleanBoard);
+  //     }
+  //   }
+  //   if (row < n & row !== 0){
+  //     for (var i=0; i<n; i++){
+
+  //       var rowSum = oldBoard.get(row).reduce(function (a,b){return a+b});
+  //       //if sum of row is greater than 0 
+  //       // if(rowSum > 0){
+  //       //   //creates array with n zeros to reset to
+  //       //   var arr = [];
+  //       //   for (var i = 0; i < n; i++) {
+  //       //     arr.push(0);
+  //       //   }
+  //       //   //reset row, row + 1, row + 2....row n-1
+  //       //   for(var r=row; r<n; r++){
+  //       //     oldBoard.rows()[r] = [0,0,0]
+  //       //     // console.log('row cleared', r)
+  //       //     // console.log('arr adding in', arr)
+  //       //     // oldBoard.set(r, [0,0,0]);                   
+  //       //   }
+  //       // }
+  //       var arr = [];
+  //       for (var j = 0; j < n; j++) {
+  //         arr.push(0);
+  //       }
+
+  //       if (rowSum > 0) {
+  //         // oldBoard.rows()[row] = [0,0,0]
+  //         // oldBoard.rows()[row + 1] = [0,0,0]
+
+  //         oldBoard.set(row, [0,0,0]); 
+  //         oldBoard.set(row+1,[0,0,0]);          
+  //         // oldBoard.set(row+2,arr);
+  //       }
+
+  //       var currentBoard = new Board(oldBoard.rows())
+  //       currentBoard.togglePiece(row, i);
+
+        
+  //       if (currentBoard.hasAnyRooksConflicts()){
+  //         currentBoard.togglePiece(row,i);
+
+  //       console.log('row :', row, 'i :', i)
+  //       console.log('CURRENTBOARD :', currentBoard.get(0), currentBoard.get(1), currentBoard.get(2))
+
+  //       } else {
+  //         console.log('solutionworks: row, i', row, i);
+  //         solutionMaker(row+1, currentBoard);
+  //       }
+  //     }
+  //   }
+  // };  
+
+  // solutionMaker(0);
+
+  // console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
+  // return solutionCount;
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
