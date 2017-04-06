@@ -127,14 +127,7 @@
       var boardLength = this.rows().length;
 
       for (var c=0; c< boardLength; c++){
-        var counter = 0;
-
-        for (var r=0; r< boardLength; r++){
-          var row = this.get(r);
-          counter = counter + row[c];
-        }
-
-        if (counter > 1){
+        if (this.hasColConflictAt(c)){
           return true;
         }
       }
