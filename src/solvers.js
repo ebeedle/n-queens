@@ -62,61 +62,51 @@ window.countNRooksSolutions = function(n) {
 
     //if row < n & row !== 0
     if (row < n & row !== 0){
+      // var oldBoard2 = oldBoard;
+      // var newBoard = new Board(oldBoard.rows())
       //FOR loop thru 0,1,2 colIndex
       for (var i=0; i<n; i++){
-        console.log('went in 2nd loop')
-        console.log('row, i', row, i)
-        //grab oldBoard from prior iteration (row was 0)
-        //oldBoard.togglePiece (row,i)
-        oldBoard.togglePiece(row, i);
+        //if current row and rows below are filled - if so reset
+        // var rowSum = oldBoard.get(row).reduce(function (a,b){return a+b},0);
+
+        // if (rowSum > 0){
+        //   for (var i=row; i<n-1; i++){
+        //     oldBoard.set(i,[0,0,0]);
+        //     oldBoard.set(i+1,[0,0,0]);
+        //   }
+        // }
+
+        if (row === 1) {
+          oldBoard.set(row,[0,0,0]);
+          oldBoard.set(row+1,[0,0,0]);          
+        }
+
+        //grab oldBoard from prior iteration (row was 0) - set to currentBoard
+        var currentBoard = oldBoard;
+        console.log("Oldboard : ", oldBoard.get(0), oldBoard.get(1), oldBoard.get(2));
+        console.log('row,i', row, i);
+        // console.log('ROW 0', currentBoard.get(0));
+        // console.log('ROW 1', currentBoard.get(1));
+        //currentBoard.togglePiece (row,i)
+        currentBoard.togglePiece(row, i);
+        console.log('has problem?', currentBoard.hasAnyRooksConflicts())
+        // console.log('hits 2nd row, col:', row, i);
         //if there are any conflict
-        if (oldBoard.hasAnyRooksConflicts()){
-          console.log('position failed')
+        if (currentBoard.hasAnyRooksConflicts()){
+          // console.log('position failed')
           //togglePiece back
-          oldBoard.togglePiece(row,i);
+          currentBoard.togglePiece(row,i);
         } 
+
         //else - recursively call   
         else {
-          console.log(oldBoard);
-          solutionMaker(row+1, oldBoard);
+          console.log('POSITION WORKS', row, i)
+          solutionMaker(row+1, currentBoard);
         }
       }
     }
   };
 
-
-  // //WORKS FOR 3 / 6 solution
-  // var solutionMaker = function (row, oldBoard){
-  //   if (row === 0){
-  //     for (var i=0; i<n; i++){
-  //       var cleanBoard = new Board({n:n});
-  //       cleanBoard.togglePiece(0,i);
-  //       solutionMaker(row +1, cleanBoard);  
-  //     }
-  //   }
-  //   //when x is n - solution count ++ 
-  //   if (row === n) {
-  //     solutionCount += 1;
-  //   }
-
-  //   if (row < n && row !== 0){
-  //     //at row 0, for each col
-  //     for (var i=0; i<n; i++){
-  //       console.log('cleanBoard', cleanBoard.rows());
-  //       console.log('row & i', row, i);
-  //       //set toggle at x and col
-  //       cleanBoard.togglePiece(row, i);
-  //       //check if board hasAnyRooksConflicts
-  //       if (cleanBoard.hasAnyRooksConflicts()){
-  //         //if conflict - togglePiece back
-  //         cleanBoard.togglePiece(row, i);
-  //         console.log('CONFLICT', row, i);
-  //       }
-  //     }
-  //     //recursively call - with row + 1
-  //     solutionMaker(row+1);
-  //   }
-  // };
   solutionMaker(0);
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
