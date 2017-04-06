@@ -13,7 +13,23 @@
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
+//don't have n, board, solutionCount, .method needs to change
+window.solutionMaker = function(row, n, board, cb, rookOrQueen) { 
+  if (row === n){
+    cb();
+    return;
+  }
 
+  for (var i=0; i<n; i++){
+      board.togglePiece(row,i);
+
+      if (!board[rookOrQueen]()) {
+        solutionMaker(row+1, n, board, cb, rookOrQueen);
+      }
+
+      board.togglePiece(row,i);
+  }
+};
 
 window.findNRooksSolution = function(n) {
   var cleanBoard = new Board({n:n});
@@ -39,24 +55,25 @@ window.findNRooksSolution = function(n) {
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
   var solutionCount = 0;
-  var cleanBoard = new Board ({n:n});
+  var board = new Board ({n:n});
 
-  var solutionMaker = function(row) { 
-    if (row === n){
-      solutionCount++;
-      return;
-    }
-    for (var i=0; i<n; i++){
-        cleanBoard.togglePiece(row,i);
+  // var solutionMaker = function(row) { 
+  //   if (row === n){
+  //     solutionCount++;
+  //     return;
+  //   }
+  //   for (var i=0; i<n; i++){
+  //       cleanBoard.togglePiece(row,i);
 
-        if (!cleanBoard.hasAnyRooksConflicts()) {
-          solutionMaker(row+1);
-        }
+  //       if (!cleanBoard.hasAnyRooksConflicts()) {
+  //         solutionMaker(row+1);
+  //       }
 
-        cleanBoard.togglePiece(row,i);
-    }
-  };
-  solutionMaker(0)
+  //       cleanBoard.togglePiece(row,i);
+  //   }
+  // };
+  solutionMaker(0, n, board, function () {solutionCount++}, 'hasAnyRooksConflicts');
+
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 
