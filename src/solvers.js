@@ -39,39 +39,85 @@ window.findNRooksSolution = function(n) {
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
   var solutionCount = 0; //fixme
-  var cleanBoard;
 
-  
-  var solutionMaker = function (row){
-
-    //when x is n - solution count ++ 
-    if (row === n) {
-      solutionCount += 1;
+  //solutionMaker - take in 2 parameters - rows (starting from 0 - iterate to n), old board
+  var solutionMaker = function (row, oldBoard) {
+    //if row === n - increase solution count 
+    if (row === n){
+      solutionCount++;
     }
 
-    if (row < n && row !== 0){
-      //at row 0, for each col
+    //if row === 0
+    if (row === 0){
+      //FOR loop thru 0,1,2 colIndex
       for (var i=0; i<n; i++){
-        console.log('cleanBoard', cleanBoard.rows());
-        console.log('row & i', row, i);
-        //set toggle at x and col
-        cleanBoard.togglePiece(row, i);
-        //check if board hasAnyRooksConflicts
-        if (cleanBoard.hasAnyRooksConflicts()){
-          //if conflict - togglePiece back
-          cleanBoard.togglePiece(row, i);
+        //create new Board
+        var cleanBoard = new Board ({n:n});
+        //toggle piece i (0,1,2) - 3 boards will be created 
+        cleanBoard.togglePiece(0,i);
+        //recursively call each one - parameters (row+1, cleanBoard)
+        solutionMaker(row+1, cleanBoard);
+      }
+    }
+
+    //if row < n & row !== 0
+    if (row < n & row !== 0){
+      //FOR loop thru 0,1,2 colIndex
+      for (var i=0; i<n; i++){
+        console.log('went in 2nd loop')
+        console.log('row, i', row, i)
+        //grab oldBoard from prior iteration (row was 0)
+        //oldBoard.togglePiece (row,i)
+        oldBoard.togglePiece(row, i);
+        //if there are any conflict
+        if (oldBoard.hasAnyRooksConflicts()){
+          console.log('position failed')
+          //togglePiece back
+          oldBoard.togglePiece(row,i);
+        } 
+        //else - recursively call   
+        else {
+          console.log(oldBoard);
+          solutionMaker(row+1, oldBoard);
         }
       }
-    //recursively call - with row + 1
-    solutionMaker(row+1);
     }
   };
 
-  for (var i=0; i<n; i++){
-    cleanBoard = new Board({n:n});
-    cleanBoard.togglePiece(0,i);
-    solutionMaker(1);  
-  }
+
+  // //WORKS FOR 3 / 6 solution
+  // var solutionMaker = function (row, oldBoard){
+  //   if (row === 0){
+  //     for (var i=0; i<n; i++){
+  //       var cleanBoard = new Board({n:n});
+  //       cleanBoard.togglePiece(0,i);
+  //       solutionMaker(row +1, cleanBoard);  
+  //     }
+  //   }
+  //   //when x is n - solution count ++ 
+  //   if (row === n) {
+  //     solutionCount += 1;
+  //   }
+
+  //   if (row < n && row !== 0){
+  //     //at row 0, for each col
+  //     for (var i=0; i<n; i++){
+  //       console.log('cleanBoard', cleanBoard.rows());
+  //       console.log('row & i', row, i);
+  //       //set toggle at x and col
+  //       cleanBoard.togglePiece(row, i);
+  //       //check if board hasAnyRooksConflicts
+  //       if (cleanBoard.hasAnyRooksConflicts()){
+  //         //if conflict - togglePiece back
+  //         cleanBoard.togglePiece(row, i);
+  //         console.log('CONFLICT', row, i);
+  //       }
+  //     }
+  //     //recursively call - with row + 1
+  //     solutionMaker(row+1);
+  //   }
+  // };
+  solutionMaker(0);
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
