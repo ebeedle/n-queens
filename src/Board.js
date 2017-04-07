@@ -159,7 +159,6 @@
         y++;
       }
 
-      console.log(count);
       if (count > 1) {
         return true;
       } else {
@@ -213,7 +212,6 @@
 
       for (var i = 0; i < diagSqs; i++) {
         var row = this.get(x);
-        console.log('row[y]',row[y])
         count = row[y] + count;
         x = x+1;
         y = y-1;
